@@ -46,18 +46,36 @@ const App = () => {
     setCurrentStep('dashboard');
   };
 
+  const handleBack = () => {
+    switch (currentStep) {
+      case 'mode':
+        setCurrentStep('auth');
+        break;
+      case 'skills':
+        setCurrentStep('mode');
+        break;
+      case 'preferences':
+        setCurrentStep('skills');
+        break;
+      case 'dashboard':
+        // Reset to preferences to allow changes
+        setCurrentStep('preferences');
+        break;
+    }
+  };
+
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 'auth':
         return <AuthPage onAuthComplete={handleAuthComplete} />;
       case 'mode':
-        return <ModeSelection onModeSelect={handleModeSelect} />;
+        return <ModeSelection onModeSelect={handleModeSelect} onBack={handleBack} />;
       case 'skills':
-        return <SkillSelection mode={selectedMode} onSkillsSelect={handleSkillsSelect} />;
+        return <SkillSelection mode={selectedMode} onSkillsSelect={handleSkillsSelect} onBack={handleBack} />;
       case 'preferences':
-        return <UserPreferences onPreferencesComplete={handlePreferencesComplete} />;
+        return <UserPreferences onPreferencesComplete={handlePreferencesComplete} onBack={handleBack} />;
       case 'dashboard':
-        return <Dashboard userData={userData} />;
+        return <Dashboard userData={userData} onBack={handleBack} />;
       default:
         return <AuthPage onAuthComplete={handleAuthComplete} />;
     }

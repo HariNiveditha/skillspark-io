@@ -5,13 +5,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, Globe, Target, BookOpen, Zap } from "lucide-react";
+import { Calendar, Clock, Globe, Target, BookOpen, Zap, ArrowLeft } from "lucide-react";
 
 interface UserPreferencesProps {
   onPreferencesComplete: (preferences: any) => void;
+  onBack?: () => void;
 }
 
-const UserPreferences = ({ onPreferencesComplete }: UserPreferencesProps) => {
+const UserPreferences = ({ onPreferencesComplete, onBack }: UserPreferencesProps) => {
   const [preferences, setPreferences] = useState({
     language: "",
     skillLevel: "",
@@ -231,7 +232,17 @@ const UserPreferences = ({ onPreferencesComplete }: UserPreferencesProps) => {
           </Card>
         </div>
 
-        <div className="text-center mt-8">
+        <div className="flex justify-center gap-4 mt-8">
+          {onBack && (
+            <Button 
+              variant="outline" 
+              onClick={onBack}
+              className="bg-white/10 hover:bg-white/20 border-white/20 text-white"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+          )}
           <Button 
             onClick={handleSubmit}
             disabled={!isFormValid}
@@ -241,13 +252,13 @@ const UserPreferences = ({ onPreferencesComplete }: UserPreferencesProps) => {
             <Zap className="h-5 w-5 mr-2" />
             Complete Setup & Start Learning
           </Button>
-          
-          {!isFormValid && (
-            <p className="text-primary-foreground/60 text-sm mt-3">
-              Please fill in the required fields to continue
-            </p>
-          )}
         </div>
+          
+        {!isFormValid && (
+          <p className="text-primary-foreground/60 text-sm mt-3 text-center">
+            Please fill in the required fields to continue
+          </p>
+        )}
       </div>
     </div>
   );

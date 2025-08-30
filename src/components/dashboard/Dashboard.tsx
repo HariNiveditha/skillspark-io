@@ -19,7 +19,8 @@ import {
   TrendingUp,
   BookOpen,
   Code,
-  Brain
+  Brain,
+  Settings
 } from "lucide-react";
 import SkillChallenges from "./SkillChallenges";
 import { getTodaysChallenges } from "@/data/challenges";
@@ -27,9 +28,10 @@ import ChallengeCard from "./ChallengeCard";
 
 interface DashboardProps {
   userData: any;
+  onBack?: () => void;
 }
 
-const Dashboard = ({ userData }: DashboardProps) => {
+const Dashboard = ({ userData, onBack }: DashboardProps) => {
   const [selectedTab, setSelectedTab] = useState('overview');
 
   const [stats, setStats] = useState({
@@ -97,10 +99,22 @@ const Dashboard = ({ userData }: DashboardProps) => {
               </p>
             </div>
           </div>
-          <Button className="bg-gradient-primary hover:opacity-90">
-            <Bell className="h-4 w-4 mr-2" />
-            Notifications
-          </Button>
+          <div className="flex gap-2">
+            {onBack && (
+              <Button 
+                variant="outline" 
+                onClick={onBack}
+                className="bg-input/20 hover:bg-input/40 border-border"
+              >
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </Button>
+            )}
+            <Button className="bg-gradient-primary hover:opacity-90">
+              <Bell className="h-4 w-4 mr-2" />
+              Notifications
+            </Button>
+          </div>
         </div>
 
         {/* Navigation Tabs */}

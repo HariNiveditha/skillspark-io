@@ -1,12 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Brain, Code, Lightbulb, Target } from "lucide-react";
+import { Brain, Code, Lightbulb, Target, ArrowLeft } from "lucide-react";
 
 interface ModeSelectionProps {
   onModeSelect: (mode: 'normal' | 'technical') => void;
+  onBack?: () => void;
 }
 
-const ModeSelection = ({ onModeSelect }: ModeSelectionProps) => {
+const ModeSelection = ({ onModeSelect, onBack }: ModeSelectionProps) => {
   return (
     <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4">
       <div className="w-full max-w-4xl">
@@ -101,7 +102,20 @@ const ModeSelection = ({ onModeSelect }: ModeSelectionProps) => {
           </Card>
         </div>
 
-        <div className="text-center mt-8">
+        <div className="flex justify-center items-center gap-4 mt-8">
+          {onBack && (
+            <Button 
+              variant="outline" 
+              onClick={onBack}
+              className="bg-white/10 hover:bg-white/20 border-white/20 text-white"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+          )}
+        </div>
+
+        <div className="text-center mt-4">
           <p className="text-primary-foreground/60 text-sm">
             Don't worry - you can always switch paths later in your dashboard
           </p>

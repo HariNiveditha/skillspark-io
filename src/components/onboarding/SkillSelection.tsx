@@ -28,6 +28,7 @@ import {
 interface SkillSelectionProps {
   mode: 'normal' | 'technical';
   onSkillsSelect: (skills: string[]) => void;
+  onBack?: () => void;
 }
 
 const technicalSkills = [
@@ -60,7 +61,7 @@ const hackathonRoles = [
   { id: 'researcher', name: 'Researcher', icon: Search, category: 'Research' },
 ];
 
-const SkillSelection = ({ mode, onSkillsSelect }: SkillSelectionProps) => {
+const SkillSelection = ({ mode, onSkillsSelect, onBack }: SkillSelectionProps) => {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -93,6 +94,8 @@ const SkillSelection = ({ mode, onSkillsSelect }: SkillSelectionProps) => {
   const handleBack = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
+    } else if (onBack) {
+      onBack();
     }
   };
 
@@ -164,7 +167,7 @@ const SkillSelection = ({ mode, onSkillsSelect }: SkillSelectionProps) => {
         </div>
 
         <div className="flex justify-center gap-4">
-          {currentStep > 0 && (
+          {(currentStep > 0 || onBack) && (
             <Button 
               variant="outline" 
               onClick={handleBack}
