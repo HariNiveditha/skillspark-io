@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,14 +29,29 @@ interface DashboardProps {
 const Dashboard = ({ userData }: DashboardProps) => {
   const [selectedTab, setSelectedTab] = useState('overview');
 
-  // Mock data for demonstration
-  const mockStats = {
-    totalScore: 2450,
-    completedChallenges: 23,
-    currentStreak: 7,
-    skillsLearned: 5,
-    progressPercent: 68
-  };
+  const [stats, setStats] = useState({
+    totalScore: 0,
+    completedChallenges: 0,
+    currentStreak: 0,
+    skillsLearned: 0,
+    progressPercent: 0,
+  });
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("skillspark-stats");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setStats({
+          totalScore: parsed.totalScore ?? 0,
+          completedChallenges: parsed.completedChallenges ?? 0,
+          currentStreak: parsed.currentStreak ?? 0,
+          skillsLearned: parsed.skillsLearned ?? 0,
+          progressPercent: parsed.progressPercent ?? 0,
+        });
+      }
+    } catch {}
+  }, []);
 
   const mockBadges = [
     { id: 1, name: "First Steps", icon: "🌟", earned: true },
@@ -94,7 +109,7 @@ const Dashboard = ({ userData }: DashboardProps) => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{mockStats.totalScore}</div>
+              <div className="text-2xl font-bold">{stats.totalScore}</div>
               <p className="text-muted-foreground text-sm">Points Earned</p>
             </CardContent>
           </Card>
@@ -107,7 +122,7 @@ const Dashboard = ({ userData }: DashboardProps) => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{mockStats.completedChallenges}</div>
+              <div className="text-2xl font-bold">{stats.completedChallenges}</div>
               <p className="text-muted-foreground text-sm">Challenges Done</p>
             </CardContent>
           </Card>
@@ -120,7 +135,7 @@ const Dashboard = ({ userData }: DashboardProps) => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{mockStats.currentStreak}</div>
+              <div className="text-2xl font-bold">{stats.currentStreak}</div>
               <p className="text-muted-foreground text-sm">Days in a Row</p>
             </CardContent>
           </Card>
@@ -133,7 +148,7 @@ const Dashboard = ({ userData }: DashboardProps) => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{mockStats.skillsLearned}</div>
+              <div className="text-2xl font-bold">{stats.skillsLearned}</div>
               <p className="text-muted-foreground text-sm">Skills Mastered</p>
             </CardContent>
           </Card>
@@ -156,21 +171,21 @@ const Dashboard = ({ userData }: DashboardProps) => {
                 <div className="space-y-4">
                   <div className="flex justify-between text-sm">
                     <span>Overall Progress</span>
-                    <span>{mockStats.progressPercent}%</span>
+                    <span>{stats.progressPercent}%</span>
                   </div>
-                  <Progress value={mockStats.progressPercent} className="h-3" />
+                  <Progress value={stats.progressPercent} className="h-3" />
                   <div className="grid grid-cols-3 gap-4 text-center">
                     <div>
                       <div className="text-lg font-semibold text-skill-technical">Python</div>
-                      <Progress value={75} className="h-2 mt-1" />
+                      <Progress value={0} className="h-2 mt-1" />
                     </div>
                     <div>
                       <div className="text-lg font-semibold text-skill-creative">Web Dev</div>
-                      <Progress value={60} className="h-2 mt-1" />
+                      <Progress value={0} className="h-2 mt-1" />
                     </div>
                     <div>
                       <div className="text-lg font-semibold text-skill-communication">Communication</div>
-                      <Progress value={85} className="h-2 mt-1" />
+                      <Progress value={0} className="h-2 mt-1" />
                     </div>
                   </div>
                 </div>
