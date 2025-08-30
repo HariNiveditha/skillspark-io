@@ -21,6 +21,9 @@ import {
   Code,
   Brain
 } from "lucide-react";
+import SkillChallenges from "./SkillChallenges";
+import { getTodaysChallenges } from "@/data/challenges";
+import ChallengeCard from "./ChallengeCard";
 
 interface DashboardProps {
   userData: any;
@@ -60,16 +63,17 @@ const Dashboard = ({ userData }: DashboardProps) => {
     { id: 4, name: "Quick Learner", icon: "⚡", earned: true },
   ];
 
-  const mockChallenges = [
-    { id: 1, title: "Complete Python Basics", difficulty: "Beginner", points: 100, completed: false },
-    { id: 2, title: "Build a Calculator", difficulty: "Intermediate", points: 250, completed: false },
-    { id: 3, title: "Team Communication Exercise", difficulty: "Beginner", points: 150, completed: false },
-  ];
+  const todaysChallenges = getTodaysChallenges();
 
   const mockTeams = [
     { id: 1, name: "Code Crushers", members: 4, project: "E-commerce App" },
     { id: 2, name: "AI Innovators", members: 3, project: "ChatBot System" },
   ];
+
+  const handleStartChallenge = (challengeId: string) => {
+    console.log(`Starting challenge: ${challengeId}`);
+    // Here you would implement challenge start logic
+  };
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -99,216 +103,238 @@ const Dashboard = ({ userData }: DashboardProps) => {
           </Button>
         </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-card border-border/50 shadow-card">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <Trophy className="h-8 w-8 text-badge-gold" />
-                <Badge variant="secondary">Total</Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalScore}</div>
-              <p className="text-muted-foreground text-sm">Points Earned</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-card border-border/50 shadow-card">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <Target className="h-8 w-8 text-skill-technical" />
-                <Badge variant="secondary">Progress</Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.completedChallenges}</div>
-              <p className="text-muted-foreground text-sm">Challenges Done</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-card border-border/50 shadow-card">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <Zap className="h-8 w-8 text-warning" />
-                <Badge variant="secondary">Streak</Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.currentStreak}</div>
-              <p className="text-muted-foreground text-sm">Days in a Row</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-card border-border/50 shadow-card">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <Brain className="h-8 w-8 text-skill-creative" />
-                <Badge variant="secondary">Skills</Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.skillsLearned}</div>
-              <p className="text-muted-foreground text-sm">Skills Mastered</p>
-            </CardContent>
-          </Card>
+        {/* Navigation Tabs */}
+        <div className="flex gap-2 mb-8">
+          <Button
+            variant={selectedTab === 'overview' ? 'default' : 'outline'}
+            onClick={() => setSelectedTab('overview')}
+          >
+            Overview
+          </Button>
+          <Button
+            variant={selectedTab === 'challenges' ? 'default' : 'outline'}
+            onClick={() => setSelectedTab('challenges')}
+          >
+            All Challenges
+          </Button>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Left Column */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Progress Tracker */}
-            <Card className="bg-gradient-card border-border/50 shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-primary" />
-                  Learning Progress
-                </CardTitle>
-                <CardDescription>Your overall skill development journey</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between text-sm">
-                    <span>Overall Progress</span>
-                    <span>{stats.progressPercent}%</span>
+        {selectedTab === 'overview' && (
+          <>
+            {/* Stats Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <Card className="bg-gradient-card border-border/50 shadow-card">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <Trophy className="h-8 w-8 text-badge-gold" />
+                    <Badge variant="secondary">Total</Badge>
                   </div>
-                  <Progress value={stats.progressPercent} className="h-3" />
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <div className="text-lg font-semibold text-skill-technical">Python</div>
-                      <Progress value={0} className="h-2 mt-1" />
-                    </div>
-                    <div>
-                      <div className="text-lg font-semibold text-skill-creative">Web Dev</div>
-                      <Progress value={0} className="h-2 mt-1" />
-                    </div>
-                    <div>
-                      <div className="text-lg font-semibold text-skill-communication">Communication</div>
-                      <Progress value={0} className="h-2 mt-1" />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats.totalScore}</div>
+                  <p className="text-muted-foreground text-sm">Points Earned</p>
+                </CardContent>
+              </Card>
 
-            {/* Daily Challenges */}
-            <Card className="bg-gradient-card border-border/50 shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-primary" />
-                  Today's Challenges
-                </CardTitle>
-                <CardDescription>Complete these tasks to earn points and badges</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {mockChallenges.map((challenge) => (
-                    <div key={challenge.id} className="flex items-center justify-between p-3 bg-input/20 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="w-4 h-4 border-2 border-primary rounded-full" />
+              <Card className="bg-gradient-card border-border/50 shadow-card">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <Target className="h-8 w-8 text-skill-technical" />
+                    <Badge variant="secondary">Progress</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats.completedChallenges}</div>
+                  <p className="text-muted-foreground text-sm">Challenges Done</p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-card border-border/50 shadow-card">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <Zap className="h-8 w-8 text-warning" />
+                    <Badge variant="secondary">Streak</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats.currentStreak}</div>
+                  <p className="text-muted-foreground text-sm">Days in a Row</p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-card border-border/50 shadow-card">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <Brain className="h-8 w-8 text-skill-creative" />
+                    <Badge variant="secondary">Skills</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats.skillsLearned}</div>
+                  <p className="text-muted-foreground text-sm">Skills Mastered</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Main Content Grid */}
+            <div className="grid lg:grid-cols-3 gap-8">
+              {/* Left Column */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* Progress Tracker */}
+                <Card className="bg-gradient-card border-border/50 shadow-card">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5 text-primary" />
+                      Learning Progress
+                    </CardTitle>
+                    <CardDescription>Your overall skill development journey</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex justify-between text-sm">
+                        <span>Overall Progress</span>
+                        <span>{stats.progressPercent}%</span>
+                      </div>
+                      <Progress value={stats.progressPercent} className="h-3" />
+                      <div className="grid grid-cols-3 gap-4 text-center">
                         <div>
-                          <div className="font-medium">{challenge.title}</div>
-                          <div className="text-sm text-muted-foreground flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs">{challenge.difficulty}</Badge>
-                            <span>{challenge.points} pts</span>
-                          </div>
+                          <div className="text-lg font-semibold text-skill-technical">Python</div>
+                          <Progress value={0} className="h-2 mt-1" />
+                        </div>
+                        <div>
+                          <div className="text-lg font-semibold text-skill-creative">Web Dev</div>
+                          <Progress value={0} className="h-2 mt-1" />
+                        </div>
+                        <div>
+                          <div className="text-lg font-semibold text-skill-communication">Communication</div>
+                          <Progress value={0} className="h-2 mt-1" />
                         </div>
                       </div>
-                      <Button size="sm" className="bg-gradient-primary hover:opacity-90">
-                        Start
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Today's Challenges */}
+                <Card className="bg-gradient-card border-border/50 shadow-card">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Target className="h-5 w-5 text-primary" />
+                      Today's Challenges
+                    </CardTitle>
+                    <CardDescription>Complete these tasks to earn points and badges</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {todaysChallenges.length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <Target className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                        <p>No challenges available today.</p>
+                        <p className="text-sm">Complete your skill selection to get personalized challenges!</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {todaysChallenges.map((challenge) => (
+                          <ChallengeCard
+                            key={challenge.id}
+                            challenge={challenge}
+                            onStart={handleStartChallenge}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Right Column */}
+              <div className="space-y-6">
+                {/* Badges & Achievements */}
+                <Card className="bg-gradient-card border-border/50 shadow-card">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Award className="h-5 w-5 text-primary" />
+                      Badges & Achievements
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-3">
+                      {mockBadges.map((badge) => (
+                        <div 
+                          key={badge.id} 
+                          className={`p-3 rounded-lg text-center ${
+                            badge.earned ? 'bg-gradient-primary text-white' : 'bg-input/20 opacity-50'
+                          }`}
+                        >
+                          <div className="text-2xl mb-1">{badge.icon}</div>
+                          <div className="text-xs font-medium">{badge.name}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Team Collaboration */}
+                <Card className="bg-gradient-card border-border/50 shadow-card">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="h-5 w-5 text-primary" />
+                      My Teams
+                    </CardTitle>
+                    <CardDescription>Collaborate on exciting projects</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {mockTeams.map((team) => (
+                        <div key={team.id} className="p-3 bg-input/20 rounded-lg">
+                          <div className="font-medium">{team.name}</div>
+                          <div className="text-sm text-muted-foreground">{team.project}</div>
+                          <div className="flex items-center justify-between mt-2">
+                            <span className="text-xs text-muted-foreground">{team.members} members</span>
+                            <Button size="sm" variant="outline">Join</Button>
+                          </div>
+                        </div>
+                      ))}
+                      <Button className="w-full" variant="outline">
+                        <Users className="h-4 w-4 mr-2" />
+                        Find More Teams
                       </Button>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                  </CardContent>
+                </Card>
 
-          {/* Right Column */}
-          <div className="space-y-6">
-            {/* Badges & Achievements */}
-            <Card className="bg-gradient-card border-border/50 shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Award className="h-5 w-5 text-primary" />
-                  Badges & Achievements
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-3">
-                  {mockBadges.map((badge) => (
-                    <div 
-                      key={badge.id} 
-                      className={`p-3 rounded-lg text-center ${
-                        badge.earned ? 'bg-gradient-primary text-white' : 'bg-input/20 opacity-50'
-                      }`}
-                    >
-                      <div className="text-2xl mb-1">{badge.icon}</div>
-                      <div className="text-xs font-medium">{badge.name}</div>
+                {/* Quick Actions */}
+                <Card className="bg-gradient-card border-border/50 shadow-card">
+                  <CardHeader>
+                    <CardTitle>Quick Actions</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <Button className="w-full justify-start" variant="outline">
+                        <Calendar className="h-4 w-4 mr-2" />
+                        Add to Calendar
+                      </Button>
+                      <Button className="w-full justify-start" variant="outline">
+                        <MapPin className="h-4 w-4 mr-2" />
+                        Find Events Nearby
+                      </Button>
+                      <Button className="w-full justify-start" variant="outline">
+                        <Share2 className="h-4 w-4 mr-2" />
+                        Share Progress
+                      </Button>
+                      <Button className="w-full justify-start" variant="outline">
+                        <MessageCircle className="h-4 w-4 mr-2" />
+                        Get AI Feedback
+                      </Button>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </>
+        )}
 
-            {/* Team Collaboration */}
-            <Card className="bg-gradient-card border-border/50 shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-primary" />
-                  My Teams
-                </CardTitle>
-                <CardDescription>Collaborate on exciting projects</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {mockTeams.map((team) => (
-                    <div key={team.id} className="p-3 bg-input/20 rounded-lg">
-                      <div className="font-medium">{team.name}</div>
-                      <div className="text-sm text-muted-foreground">{team.project}</div>
-                      <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-muted-foreground">{team.members} members</span>
-                        <Button size="sm" variant="outline">Join</Button>
-                      </div>
-                    </div>
-                  ))}
-                  <Button className="w-full" variant="outline">
-                    <Users className="h-4 w-4 mr-2" />
-                    Find More Teams
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Quick Actions */}
-            <Card className="bg-gradient-card border-border/50 shadow-card">
-              <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <Button className="w-full justify-start" variant="outline">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Add to Calendar
-                  </Button>
-                  <Button className="w-full justify-start" variant="outline">
-                    <MapPin className="h-4 w-4 mr-2" />
-                    Find Events Nearby
-                  </Button>
-                  <Button className="w-full justify-start" variant="outline">
-                    <Share2 className="h-4 w-4 mr-2" />
-                    Share Progress
-                  </Button>
-                  <Button className="w-full justify-start" variant="outline">
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    Get AI Feedback
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+        {selectedTab === 'challenges' && (
+          <SkillChallenges selectedSkills={userData.skills || []} />
+        )}
       </div>
     </div>
   );
